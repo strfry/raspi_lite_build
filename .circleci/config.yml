@@ -31,8 +31,8 @@ jobs:
       - run: wget ${mirror}/latest-stable/main/x86_64/apk-tools-static-${apk_version}.apk
       - run: tar -xzf apk-tools-static-*.apk
       - run: sudo ./sbin/apk.static -X ${mirror}/latest-stable/main -U --allow-untrusted --root ~/chroot --arch=armhf --initdb add apk-tools
-      - run: cp /usr/bin/qemu-arm-static ~/chroot/usr/bin
-      - run: chroot ~/chroot /bin/sh -- apk add alpine-base linux-rpi2
+      - run: sudo cp /usr/bin/qemu-arm-static ~/chroot/usr/bin
+      - run: sudo chroot ~/chroot /bin/sh -- apk add alpine-base linux-rpi2
       - run: tar czf ~/work/rootfs.tar.gz ~/chroot
       - store_artifacts:
           path: ~/work/
