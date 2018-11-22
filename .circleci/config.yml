@@ -12,8 +12,6 @@ jobs:
     working_directory: ~/work
     machine:
       image: circleci/classic:latest
-    #docker:
-    #  - image: debian:stretch
 
     steps:
       - checkout
@@ -22,11 +20,18 @@ jobs:
             parted qemu-user-static
             dosfstools git curl
             openssl ca-certificates
+            libconfuse-dev
       - run:
             name: Setup Environment Variables
             command: |
                     echo 'export mirror="http://dl-cdn.alpinelinux.org/alpine/"' >> $BASH_ENV
                     echo 'export apk_version=2.10.1-r0' >> $BASH_ENV
+
+      # install genimage
+      - run: wget https://github.com/pengutronix/genimage/releases/download/v10/genimage-10.tar.xz
+      - run: tar xf genimage-10.tar.xz
+      - run: cd genimage-10 && ./configure && make && sudo make install
+
       # https://wiki.alpinelinux.org/wiki/Installing_Alpine_Linux_in_a_chroot
       - run: wget ${mirror}/latest-stable/main/x86_64/apk-tools-static-${apk_version}.apk
       - run: tar -xzf apk-tools-static-*.apk
