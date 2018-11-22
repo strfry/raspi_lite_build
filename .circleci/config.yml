@@ -17,6 +17,11 @@ jobs:
 
     steps:
       - checkout
+      - run: sudo apt update &&
+          sudo apt install -y --no-install-recommends
+            parted qemu-user-static
+            dosfstools git curl
+            openssl ca-certificates git
       - run:
             name: Setup Environment Variables
             command: |
@@ -25,13 +30,7 @@ jobs:
       # https://wiki.alpinelinux.org/wiki/Installing_Alpine_Linux_in_a_chroot
       - run: wget ${mirror}/latest-stable/main/x86_64/apk-tools-static-${apk_version}.apk
       - run: tar -xzf apk-tools-static-*.apk
-      - run: ./sbin/apk.static -X ${mirror}/latest-stable/main -U --allow-untrusted --root ~/work --arch=armhf --initdb add alpine-base linux-rpi
-      - run: sudo apt update &&
-          sudo apt install -y --no-install-recommends
-            parted qemu-user-static
-            dosfstools git curl
-            openssl ca-certificates git
-
+      - run: sudo ./sbin/apk.static -X ${mirror}/latest-stable/main -U --allow-untrusted --root ~/work --arch=armhf --initdb add alpine-base linux-rpi
       - store_artifacts:
           path: ~/work/
           destination: deploy
