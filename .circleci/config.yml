@@ -17,26 +17,23 @@ jobs:
 
     steps:
       - checkout
+      - run:
+            name: Setup Environment Variables
+            command: |
+                    echo 'export mirror="http://dl-cdn.alpinelinux.org/alpine/"' >> $BASH_ENV
+                    echo 'export apk_version=2.10.1-r0' >> $BASH_ENV
+      # https://wiki.alpinelinux.org/wiki/Installing_Alpine_Linux_in_a_chroot
+      - run: wget ${mirror}/latest-stable/main/x86_64/apk-tools-static-${apk_version}.apk
+      - run: tar -xzf apk-tools-static-*.apk
+      - run: ./sbin/apk.static -X ${mirror}/latest-stable/main -U --allow-untrusted --root ~/work --arch=armhf --initdb add alpine-base linux-rpi
       - run: sudo apt update &&
           sudo apt install -y --no-install-recommends
-            quilt parted realpath qemu-user-static debootstrap zerofree pxz zip
-            dosfstools bsdtar libcap2-bin grep rsync xz-utils file git curl
-            openssl ca-certificates git sudo bc wget rsync
-
-      - run: git clone https://github.com/RPi-Distro/pi-gen
-      - run: pwd; ls -al; id -a
-      - run: cd pi-gen;echo "IMG_NAME='Raspbian'" > config
-      - run: cd pi-gen;touch ./stage3/SKIP ./stage4/SKIP ./stage5/SKIP
-      - run: cd pi-gen;touch ./stage4/SKIP_IMAGES ./stage5/SKIP_IMAGES
-      - run: cd pi-gen;sudo ./build-docker.sh # ./build.sh
-      - run: cd pi-gen; ls -hal deploy/
-      - run: cd pi-gen; mkdir -p deploy2/
-      - run: cd pi-gen; cp -av deploy/image_*-Raspbian-lite.zip deploy2/image-Raspbian-lite.zip
-      - run: cd pi-gen; cp -av deploy/build.log deploy2/
-      - run: cd pi-gen; ls -hal deploy2/
+            parted qemu-user-static
+            dosfstools git curl
+            openssl ca-certificates git
 
       - store_artifacts:
-          path: ~/work/pi-gen/deploy2
+          path: ~/work/
           destination: deploy
 
 
