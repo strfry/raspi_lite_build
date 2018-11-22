@@ -39,7 +39,7 @@ jobs:
       - run: sudo cp /usr/bin/qemu-arm-static ~/chroot/usr/bin
 
       - run: sudo chroot ~/chroot /sbin/apk -- add alpine-base linux-rpi2
-      - run: tar czf ~/work/rootfs.tar.gz ~/chroot
+      - run: sudo tar czf ~/work/rootfs.tar.gz ~/chroot
       - store_artifacts:
-          path: ~/work/
+          path: ~/work/rootfs.tar.gz
           destination: deploy
