@@ -48,6 +48,8 @@ jobs:
       # package into sdcard image
       - run: sudo genimage --rootpath ~/chroot
 
+      - run: cd images && sudo zip sdcard.img.zip sdcard.img
+
       - store_artifacts:
-          path: ~/work/images/sdcard.img
+          path: ~/work/images/sdcard.img.zip
           destination: deploy
