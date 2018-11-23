@@ -17,10 +17,9 @@ jobs:
       - checkout
       - run: sudo apt update &&
           sudo apt install -y --no-install-recommends
-            parted qemu-user-static
-            dosfstools git curl
-            openssl ca-certificates
-            libconfuse-dev
+            qemu-user-static
+            dosfstools
+            libconfuse-dev genext2fs mtools
       - run:
             name: Setup Environment Variables
             command: |
@@ -31,6 +30,7 @@ jobs:
       - run: wget https://github.com/pengutronix/genimage/releases/download/v10/genimage-10.tar.xz
       - run: tar xf genimage-10.tar.xz
       - run: cd genimage-10 && ./configure && make && sudo make install
+      - run: echo mtools_skip_check=1 > ~/.mtoolsrc # weird workaround
 
       # https://wiki.alpinelinux.org/wiki/Installing_Alpine_Linux_in_a_chroot
       - run: wget ${mirror}/latest-stable/main/x86_64/apk-tools-static-${apk_version}.apk
@@ -44,7 +44,10 @@ jobs:
       - run: sudo cp /usr/bin/qemu-arm-static ~/chroot/usr/bin
 
       - run: sudo chroot ~/chroot /sbin/apk -- add alpine-base linux-rpi2
-      - run: sudo tar czf ~/work/rootfs.tar.gz ~/chroot
+
+      # package into sdcard image
+      - run: sudo genimage --rootpath ~/chroot
+
       - store_artifacts:
-          path: ~/work/rootfs.tar.gz
+          path: ~/work/images/sdcard.img
           destination: deploy
