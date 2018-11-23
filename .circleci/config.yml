@@ -49,7 +49,8 @@ jobs:
       - run: sudo genimage --rootpath ~/chroot
 
       - run: cd images && sudo zip sdcard.img.zip sdcard.img
+      - run: mkdir deploy && sudo mv images/sdcard.img.zip deploy
 
       - store_artifacts:
-          path: ~/work/images/sdcard.img.zip
+          path: ~/work/deploy
           destination: deploy
